@@ -1,0 +1,18 @@
+{
+    "manifest_version": 2,
+    "version": "0.1",
+    "background": {
+        "persistent": true,
+        "scripts": ["events.js"]
+    },
+    "content_scripts": [{
+        "matches": ["*://t-square.gatech.edu/portal/tool/*/studentView.jsf"],
+        "js": ["lib/jquery-2.0.3.js", "gradebook.js"],
+        "all_frames": true
+    }],
+    "name": "T3 Gradebook",
+    "permissions": [
+        "webRequest",
+        "*://t-square.gatech.edu/*"
+    ]
+}
