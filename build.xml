@@ -1,0 +1,11 @@
+<project name="t3-gradebook" default="build" basedir=".">
+    <target name="build" description="build zip of source for chrome store upload">
+        <zip destfile="t3-gradebook.zip">
+            <fileset dir=".">
+                <include name="**/*" />
+                <exclude name="build.zip" />
+                <exclude name="build.xml" />
+            </fileset>
+        </zip>
+    </target>
+</project>
