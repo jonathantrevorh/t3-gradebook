@@ -67,7 +67,14 @@ function getGradebook() {
         }
     }
     if (category) gradebook.push(category);
-    if (globalCategory) gradebook.push(globalCategory);
+    if (globalCategory) {
+        globalCategory.weight = 100;
+        for (var i=0 ; i < gradebook.length ; i++) {
+            globalCategory.weight -= gradebook[i].weight;
+        }
+        globalCategory.weight = globalCategory.weight + "%"
+        gradebook.push(globalCategory);
+    }
     return gradebook;
 }
 
@@ -77,23 +84,42 @@ console.log("Gradebook");
 console.log(gradebook);
 
 function getAverage(gradebook) {
-    var n=0, sumGrade=0;
+    var n=0, sum=0;
+    var map = [];
+    
     for (var i=0 ; i < gradebook.length ; i++) {
-        for (var j=0 ; j < gradebook[i].grades.length ; j++) {
-            var grade = gradebook[i].grades[j].value;
-            var outof = gradebook[i].grades[j].outof;
-            if (grade == "-") continue;
+        var category = gradebook[i], grades = category.grades;
+        n=0, sum=0;
+        var value, outof;
+        for (var j=0 ; j < grades.length ; j++) {
+            if (!isFinite(grades[j].value)) continue;
+            sum += grades[j].value / grades[j].outof;
             n++;
-            sumGrade += grade / outof;
         }
+        map[i] = {
+            "grade": sum/n,
+            "weight": parseInt(category.weight)
+        };
     }
-    return sumGrade/n;
+    
+    var grade=0, weight=0;
+    for (var i=0 ; i < map.length ; i++) {
+        if (!isFinite(map[i].grade)) continue;
+        console.log(map[i]);
+        grade += map[i].grade * map[i].weight;
+        weight += map[i].weight;
+    }
+    
+    grade /= weight;
+    grade *= 100;
+    
+    return grade;
 }
 
 var grade = getAverage(gradebook);
 
 console.log("Average grade");
-var formattedGrade = Math.round(grade*100);
+var formattedGrade = grade;
 console.log(formattedGrade);
 
 $(".itemSummary tbody").append($("<tr><td>T&sup3; Grade</td><td>" + formattedGrade + "%</td></tr>"));
